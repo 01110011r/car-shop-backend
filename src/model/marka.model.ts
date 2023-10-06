@@ -62,3 +62,5 @@ MarkaModel.init(
         deletedAt:true
     }
 );
+
+MarkaModel.sync({alter:true});

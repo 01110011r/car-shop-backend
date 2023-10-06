@@ -5,7 +5,9 @@ const dburl : string = process.env.DB_URL || 'postgres://user:pass@example.com:5
 
 
 
-export const newSequelize=new Sequelize(dburl);
+export const newSequelize=new Sequelize(dburl,{
+    logging:false
+});
 
 
 

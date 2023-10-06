@@ -1,0 +1,59 @@
+type Query{
+model(marka_id:ID):Model
+models:[Model]
+}
+
+type Mutation{
+    addmodel(marka:String, gearbook:String, tanirovka:Boolean, motor:Int, year:Int, color:String, distance:String,deseription:String, narx:Int):Req
+    putmodel(marka_id:ID, marka:String, gearbook:String, tanirovka:Boolean, motor:Int, year:Int, color:String, distance:String,deseription:String, narx:Int):Req
+    deletemodel(marka_id:ID):Req
+}
+
+
+type Model{
+    marka_id:ID
+    marka:String
+    gearbook:String
+    tanirovka:Boolean
+    motor:Int
+    year:Int
+    color:String
+    distance:String
+    deseription:String
+    narx:Int
+}
+
+
+
+type Req{
+    msg:String,
+    data:Any
+}
+
+scalar Any
+
+#    marka_id: {
+#         marka: {
+#         },
+#         gearbook: {
+#         },
+#         tanirovka: {
+#         },
+#         motor: {
+#         },
+#         year:{
+#         },
+#         color:{
+#         },
+#         distance:{
+#         },
+#         deseription:{
+#         },
+#         narx:{
+#         },
+#         tashqi_img:{
+#         },
+#         ichki_img:{
+#         },
+#         model_img:{
+#         }

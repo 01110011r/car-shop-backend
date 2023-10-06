@@ -1,0 +1,27 @@
+type Query{
+    category(category_id:ID):Category
+    categories:[Category]
+}
+
+
+type Mutation{
+    addcategory(category:String):Req
+    putcategory(category_id:ID, category:String):Req
+    deletecategory(category_id:ID):Req
+}
+
+
+type Category{
+    category_id:ID
+    category:String
+    category_img:String
+}
+
+
+
+type Req{
+    msg:String
+    data:Any
+}
+
+scalar Any
