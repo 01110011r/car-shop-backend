@@ -21,16 +21,17 @@ CategoryModel.init(
             allowNull: false
         },
         category_img: {
-            type: DataTypes.STRING,
-            allowNull: false
+            type: DataTypes.STRING
         }
 
     },
     {
         sequelize: newSequelize,
-        modelName: "category",
+        modelName: "categories",
         paranoid: true,
         timestamps: true,
         deletedAt: true
     }
-)
+);
+
+// CategoryModel.sync({alter:true});

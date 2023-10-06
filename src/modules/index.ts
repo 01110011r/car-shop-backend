@@ -1,8 +1,8 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import marka from "./marka";
-
+import category from "./category";
 
 export default makeExecutableSchema({
-    typeDefs:[marka.td],
-    resolvers:[marka.resolvers]
+    typeDefs:[marka.td, category.td],
+    resolvers:[marka.resolvers, category.resolvers]
 });

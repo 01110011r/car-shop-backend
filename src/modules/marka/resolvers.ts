@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { MarkaModel } from "../../model/marka.model";
+import { MarkaModel } from "../../model";
 
 
 
@@ -59,19 +59,19 @@ export const resolvers = {
 
     Mutation: {
 // add
-        addmodel: async (root: undefined, { marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx }: { marka: string, gearbook: string, tanirovka: boolean, motor: number, year: number, color: string, distance: string, deseription: string, narx: number }) => {
+        addmodel: async (root: undefined, { marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id }: { marka: string, gearbook: string, tanirovka: boolean, motor: number, year: number, color: string, distance: string, deseription: string, narx: number, category_id:string }) => {
             try {
-                if (!marka || !gearbook || !narx) {
+                if (!marka || !gearbook || !narx || !category_id) {
                     return new GraphQLError("malumot yetarli emas :(");
                 }
 
-                const check = await MarkaModel.findOne({ where: { marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx } });
+                const check = await MarkaModel.findOne({ where: { marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id } });
 
                 if (check) return {
                     msg: "already exists !"
                 };
 
-                const newData = await MarkaModel.create({ marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx });
+                const newData = await MarkaModel.create({ marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id});
 
                 
                 return {
@@ -94,13 +94,13 @@ export const resolvers = {
 
 
         // put
-        putmodel:async(root: undefined, {marka_id, marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx }: {marka_id:string, marka: string, gearbook: string, tanirovka: boolean, motor: number, year: number, color: string, distance: string, deseription: string, narx: number })=>{
+        putmodel:async(root: undefined, {marka_id, marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id }: {marka_id:string, marka: string, gearbook: string, tanirovka: boolean, motor: number, year: number, color: string, distance: string, deseription: string, narx: number, category_id:string })=>{
             try {
                 const check=await MarkaModel.findOne({where:{marka_id}});
 
                 if(!check)return new GraphQLError("notfound");
 
-                 const PutData=await MarkaModel.update({ marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx },{
+                 const PutData=await MarkaModel.update({ marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id},{
                     where:{
                         marka_id
                     }

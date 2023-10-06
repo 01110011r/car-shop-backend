@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, UUID } from "sequelize";
 import { newSequelize } from "../config";
 
 
@@ -50,17 +50,20 @@ MarkaModel.init(
             type:DataTypes.STRING
         },
         model_img:{
-            type:DataTypes.STRING,
+            type:DataTypes.STRING
+        },
+        category_id:{
+            type:UUID,
             allowNull:false
         }
     },
     {
         sequelize: newSequelize,
-        modelName:"marka",
+        modelName:"markas",
         timestamps:true,
         paranoid:true,
         deletedAt:true
     }
 );
 
-MarkaModel.sync({alter:true});
+// MarkaModel.sync({alter:true});
