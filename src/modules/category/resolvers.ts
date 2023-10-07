@@ -13,10 +13,7 @@ export const resolvers = {
                 const data : CategoryModel | null = await CategoryModel.findOne({ where: { category_id }, include: MarkaModel });
                 console.log(data);
 
-                return {
-                    msg: data ? "ok" : "notfound",
-                    data: data
-                }
+                return data;
 
 
             } catch (error: any) {
@@ -39,10 +36,7 @@ export const resolvers = {
 
                 console.log(data);
 
-                return {
-                    msg: data ? "ok" : "notfound",
-                    data
-                };
+                return data;
 
             } catch (error: any) {
                 console.log(error.message);

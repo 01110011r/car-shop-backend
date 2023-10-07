@@ -15,6 +15,7 @@ type Category{
     category_id:ID
     category:String
     category_img:String
+    markas:[Model]
 }
 
 

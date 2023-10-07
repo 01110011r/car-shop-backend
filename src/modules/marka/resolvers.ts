@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { MarkaModel } from "../../model";
+import { CategoryModel, MarkaModel } from "../../model";
 
 
 
@@ -13,10 +13,10 @@ export const resolvers = {
 
 
                 const data = await MarkaModel.findOne({ where: { marka_id } });
-                return {
-                    msg: data ? "ok" : "notfound",
-                    data
-                }
+                
+                return data;
+
+
             } catch (error: any) {
                 console.log(error.message);
                 return new GraphQLError(error.message, {
@@ -34,12 +34,9 @@ export const resolvers = {
         //  models
         models: async () => {
             try {
-                const data = await MarkaModel.findAll();
+                const data = await MarkaModel.findAll({include:CategoryModel});
                 console.log(data);
-                return {
-                    msg: data ? "ok" : "notfound",
-                    data
-                }
+                return data;
 
             } catch (error: any) {
                 console.log(error.message);
@@ -61,7 +58,7 @@ export const resolvers = {
 // add
         addmodel: async (root: undefined, { marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id }: { marka: string, gearbook: string, tanirovka: boolean, motor: number, year: number, color: string, distance: string, deseription: string, narx: number, category_id:string }) => {
             try {
-                if (!marka || !gearbook || !narx || !category_id) {
+                if (!marka || !narx || !category_id) {
                     return new GraphQLError("malumot yetarli emas :(");
                 }
 

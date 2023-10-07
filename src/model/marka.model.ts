@@ -17,8 +17,7 @@ MarkaModel.init(
             allowNull: false
         },
         gearbook: {
-            type: DataTypes.STRING,
-            allowNull: false
+            type: DataTypes.STRING
         },
         tanirovka: {
             type: DataTypes.BOOLEAN,
