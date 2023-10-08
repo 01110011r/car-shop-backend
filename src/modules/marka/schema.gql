@@ -4,8 +4,8 @@ models:[Model]
 }
 
 type Mutation{
-    addmodel(marka:String, gearbook:String, tanirovka:Boolean, motor:Int, year:Int, color:String, distance:String,deseription:String, narx:Int, category_id:ID):Req
-    putmodel(marka_id:ID, marka:String, gearbook:String, tanirovka:Boolean, motor:Int, year:Int, color:String, distance:String,deseription:String, narx:Int, category_id:ID):Req
+    addmodel(marka:String, gearbook:String, tanirovka:Boolean, motor:Int, year:Int, color:String, distance:String,deseription:String, narx:Int, category_id:ID, file:Upload!):Req
+    putmodel(marka_id:ID, marka:String, gearbook:String, tanirovka:Boolean, motor:Int, year:Int, color:String, distance:String,deseription:String, narx:Int, category_id:ID, file:Upload!):Req
     deletemodel(marka_id:ID):Req
 }
 
@@ -21,6 +21,7 @@ type Model{
     distance:String
     deseription:String
     narx:Int
+    marka_img:String
 }
 
 
@@ -31,29 +32,5 @@ type Req{
 }
 
 scalar Any
+scalar Upload
 
-#    marka_id: {
-#         marka: {
-#         },
-#         gearbook: {
-#         },
-#         tanirovka: {
-#         },
-#         motor: {
-#         },
-#         year:{
-#         },
-#         color:{
-#         },
-#         distance:{
-#         },
-#         deseription:{
-#         },
-#         narx:{
-#         },
-#         tashqi_img:{
-#         },
-#         ichki_img:{
-#         },
-#         model_img:{
-#         }

@@ -1,0 +1,29 @@
+type Query{
+    admin(admin_id:ID):Admin
+    admins:[Admin]
+}
+
+
+
+type Mutation{
+    signup(adminname:String, password:String):Req
+    signin(adminname:String, password:String):Req
+    putadmin(admin_id:ID, adminname:String, password:String):Req
+    deletadmin(admin_id:ID):Req
+}
+
+
+type Admin{
+    admin_id:String
+    adminname:String
+    password:String
+    token:String
+}
+
+
+type Req{
+    msg:String
+    data:Any
+}
+
+scalar Any

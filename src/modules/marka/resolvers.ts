@@ -1,6 +1,8 @@
 import { GraphQLError } from "graphql";
 import { CategoryModel, MarkaModel } from "../../model";
-
+import { GraphQLUpload } from 'graphql-upload-ts';
+import {createWriteStream} from "fs";
+import {resolve} from "path"; 
 
 
 export const resolvers = {
@@ -9,16 +11,11 @@ export const resolvers = {
         // model
         model: async (root: undefined, { marka_id }: { marka_id: string }) => {
             try {
-                console.log(marka_id);
-
-
                 const data = await MarkaModel.findOne({ where: { marka_id } });
                 
                 return data;
 
-
             } catch (error: any) {
-                console.log(error.message);
                 return new GraphQLError(error.message, {
                     extensions: {
                         code: "INTERNAL_SERVER_ERROR",
@@ -35,11 +32,10 @@ export const resolvers = {
         models: async () => {
             try {
                 const data = await MarkaModel.findAll({include:CategoryModel});
-                console.log(data);
+        
                 return data;
 
             } catch (error: any) {
-                console.log(error.message);
                 return new GraphQLError(error.message, {
                     extensions: {
                         code: "INTERNAL_SERVER_ERROR",
@@ -56,28 +52,35 @@ export const resolvers = {
 
     Mutation: {
 // add
-        addmodel: async (root: undefined, { marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id }: { marka: string, gearbook: string, tanirovka: boolean, motor: number, year: number, color: string, distance: string, deseription: string, narx: number, category_id:string }) => {
+        addmodel: async (root: undefined, { marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id, file }: { marka: string, gearbook: string, tanirovka: boolean, motor: number, year: number, color: string, distance: string, deseription: string, narx: number, category_id:string, file:any }, {token}:{token:string}) => {
             try {
-                if (!marka || !narx || !category_id) {
-                    return new GraphQLError("malumot yetarli emas :(");
-                }
-
+                
                 const check = await MarkaModel.findOne({ where: { marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id } });
 
-                if (check) return {
-                    msg: "already exists !"
-                };
+                let { filename, createReadStream } = await file;
+            
+                        filename = filename.replace(/\s/g, "");
+                     
+                        const stream = createReadStream();
+                        
+                        const out = createWriteStream(resolve("uploads", filename));
+                        stream.pipe(out);
 
-                const newData = await MarkaModel.create({ marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id});
+                        let newData;
+
+                        if (marka || narx || category_id) {
+
+                          if(!check&&token) newData = await MarkaModel.create({ marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id, marka_img:filename});
+                        }
+
 
                 
                 return {
-                    msg:"ok",
+                    msg: !marka || !narx || !category_id ? "insufficient data :(" : check ? "already exists :(" : "ok",
                     data:newData
                 };
 
             } catch (error: any) {
-                console.log(error.message);
                 return new GraphQLError(error.message, {
                     extensions: {
                         code: "INTERNAL_SERVER_ERROR",
@@ -91,13 +94,22 @@ export const resolvers = {
 
 
         // put
-        putmodel:async(root: undefined, {marka_id, marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id }: {marka_id:string, marka: string, gearbook: string, tanirovka: boolean, motor: number, year: number, color: string, distance: string, deseription: string, narx: number, category_id:string })=>{
+        putmodel:async(root: undefined, {marka_id, marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id, file }: {marka_id:string, marka: string, gearbook: string, tanirovka: boolean, motor: number, year: number, color: string, distance: string, deseription: string, narx: number, category_id:string, file:any }, {token}:{token:string})=>{
             try {
                 const check=await MarkaModel.findOne({where:{marka_id}});
+  
+                let { filename, createReadStream } = await file;
+            
+                        filename = filename.replace(/\s/g, "");
+                        
+                        const stream = createReadStream();
+                        
+                        const out = createWriteStream(resolve("uploads", filename));
+                        stream.pipe(out);
 
-                if(!check)return new GraphQLError("notfound");
 
-                 const PutData=await MarkaModel.update({ marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id},{
+                let PutData;
+               if(check&&token) PutData=await MarkaModel.update({ marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id, marka_img: filename},{
                     where:{
                         marka_id
                     }
@@ -105,13 +117,12 @@ export const resolvers = {
 
 
                  return {
-                    msg:"ok",
-                    data:PutData
+                    msg: check ? "ok" : "notfound  :(",
+                    data:check
                  }
 
 
             } catch (error:any) {
-                console.log(error.message);
                 return new GraphQLError(error.message,{
                     extensions:{
                         code:"INTERNAL_SERVER_ERROR",
@@ -126,11 +137,11 @@ export const resolvers = {
 
 
         // delete
-        deletemodel:async(root:undefined, {marka_id}:{marka_id:string})=>{
+        deletemodel:async(root:undefined, {marka_id}:{marka_id:string}, {token}:{token:string})=>{
             try {
                 const check=await MarkaModel.findOne({where:{marka_id}});
 
-                if(!check)return new GraphQLError("notfound");
+                if(!check&&!token)return new GraphQLError("notfound");
 
 
                 const deleted=await MarkaModel.destroy({
@@ -146,7 +157,6 @@ export const resolvers = {
                 }
                 
             } catch (error:any) {
-                console.log(error.message);
                 return new GraphQLError(error.message,{
                     extensions:{
                         code:"INTERNAL_SERVER_ERROR",
@@ -158,17 +168,9 @@ export const resolvers = {
             }
         }
 
-    }
+    },
+
+    Upload: GraphQLUpload
 
 };
 
-// marka_id:ID
-// marka:String
-// gearbook:String
-// tanirovka:Boolean
-// motor:Int
-// year:Int
-// color:String
-// distance:String
-// deseription:String
-// narx:Int

@@ -5,8 +5,8 @@ type Query{
 
 
 type Mutation{
-    addcategory(category:String):Req
-    putcategory(category_id:ID, category:String):Req
+    addcategory(category:String, file:Upload!):Req
+    putcategory(category_id:ID, category:String, file:Upload):Req
     deletecategory(category_id:ID):Req
 }
 
@@ -25,4 +25,5 @@ type Req{
     data:Any
 }
 
-scalar Any
+scalar Any 
+scalar Upload

@@ -9,7 +9,6 @@ import http from "http";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { graphqlUploadExpress } from 'graphql-upload-ts';
-import { GraphQLUpload } from 'graphql-upload-ts';
 
 
 
@@ -17,11 +16,7 @@ interface MyContext {
   token?: string
 }
 
-
 async function main(): Promise<void> {
-
-
-
   try {
     await newSequelize.authenticate();
     console.log('Connection has been established successfully.');
@@ -29,13 +24,9 @@ async function main(): Promise<void> {
     console.error('Unable to connect to the database:', error);
   }
 
-
-
   const app = express();
 
   const httpServer = http.createServer(app);
-
-
 
 
   const server = new ApolloServer<MyContext>({
@@ -48,8 +39,8 @@ async function main(): Promise<void> {
   await server.start();
 
 
-  app.use('/graphql',
-  graphqlUploadExpress({maxFileSize:10000000, maxFiles:3}),
+  app.use('/',
+    graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 3 }),
     cors<cors.CorsRequest>(),
     bodyParser.json({ limit: '20mb' }),
     expressMiddleware(server, {
@@ -60,11 +51,6 @@ async function main(): Promise<void> {
 
   await new Promise<void>((resolve) => httpServer.listen({ port: 4001 }, resolve));
 
-  // const { url } = await startStandaloneServer(server, {
-  //   listen: { port: 4000 }
-  // });
-
-  // console.log(`🚀  Server ready at: ${url}`);
 
   console.log(`🚀 Server ready at http://localhost:4001/`);
 

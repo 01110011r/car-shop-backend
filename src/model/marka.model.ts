@@ -42,13 +42,7 @@ MarkaModel.init(
             type:DataTypes.BIGINT,
             allowNull:false
         },
-        tashqi_img:{
-            type:DataTypes.STRING
-        },
-        ichki_img:{
-            type:DataTypes.STRING
-        },
-        model_img:{
+        marka_img:{
             type:DataTypes.STRING
         },
         category_id:{
@@ -59,10 +53,6 @@ MarkaModel.init(
     {
         sequelize: newSequelize,
         modelName:"markas",
-        timestamps:true,
-        paranoid:true,
-        deletedAt:true
+        timestamps:true
     }
 );
-
-// MarkaModel.sync({alter:true});

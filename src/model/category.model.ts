@@ -28,10 +28,6 @@ CategoryModel.init(
     {
         sequelize: newSequelize,
         modelName: "categories",
-        paranoid: true,
-        timestamps: true,
-        deletedAt: true
+        timestamps: true
     }
 );
-
-// CategoryModel.sync({alter:true});

@@ -1,5 +1,8 @@
 import { GraphQLError } from "graphql";
 import { CategoryModel, MarkaModel } from "../../model";
+import { GraphQLUpload, Upload, UploadOptions } from 'graphql-upload-ts';
+import { createWriteStream } from "fs";
+import { resolve } from "path";
 
 
 export const resolvers = {
@@ -10,8 +13,7 @@ export const resolvers = {
         category: async (_: undefined, { category_id }: { category_id: string }) => {
             try {
 
-                const data : CategoryModel | null = await CategoryModel.findOne({ where: { category_id }, include: MarkaModel });
-                console.log(data);
+                const data: CategoryModel | null = await CategoryModel.findOne({ where: { category_id }, include: MarkaModel });
 
                 return data;
 
@@ -34,12 +36,9 @@ export const resolvers = {
             try {
                 const data = await CategoryModel.findAll({ include: MarkaModel });
 
-                console.log(data);
-
                 return data;
 
             } catch (error: any) {
-                console.log(error.message);
                 return new GraphQLError(error.message, {
                     extensions: {
                         code: "INTERNAL_SERVER_ERROR",
@@ -63,17 +62,24 @@ export const resolvers = {
 
 
         // add
-        addcategory: async (_: undefined, { category }: { category: string }) => {
+        addcategory: async (_: undefined, { category, file }: { category: string, file: any }, {token}:{token:string}) => {
             try {
 
                 const check = await CategoryModel.findOne({ where: { category } });
 
-                if (check) return {
-                    msg: "already exists  :(",
-                    data: check
+                let { filename, createReadStream } = await file;
+           
+                filename = filename.replace(/\s/g, "");
+      
+                const stream = createReadStream();
+                
+                const out = createWriteStream(resolve("uploads", filename));
+                stream.pipe(out);
+               
+                  let added;
+                if (!check&&token){
+                     added = await CategoryModel.create({ category, category_img:filename });
                 };
-
-                const added = await CategoryModel.create({ category });
 
                 return {
                     msg: "ok",
@@ -96,29 +102,35 @@ export const resolvers = {
 
 
         // put
-        putcategory: async (_: undefined, { category_id, category }: { category_id: string, category: string }) => {
+        putcategory: async (_: undefined, { category_id, category, file }: { category_id: string, category: string, file:any }, {token}:{token:string}) => {
             try {
 
                 const check = await CategoryModel.findOne({ where: { category_id } });
 
-                if (!check) return {
-                    msg: "notfound  :(",
-                };
+             let {filename, createReadStream}=await file;
 
-                const newData = await CategoryModel.update({ category }, {
+             filename=filename.replace(/\s/g, "");
+
+             const stream=createReadStream();
+
+             const out=createWriteStream(resolve("uploads", filename));
+
+             stream.pipe(out);
+
+             let newData;
+                if(check&&token) newData = await CategoryModel.update({ category, category_img:filename }, {
                     where: {
                         category_id
                     }
                 });
 
                 return {
-                    msg: "ok",
-                    data: newData
+                    msg: check ? "ok" : "notfound :(",
+                    data: check
                 };
 
 
             } catch (error: any) {
-                console.log(error.message);
                 return new GraphQLError(error.message, {
                     extensions: {
                         code: "INTERNAL_SERVER_ERROR",
@@ -133,14 +145,12 @@ export const resolvers = {
 
 
         // delete
-        deletecategory: async (_: undefined, { category_id }: { category_id: string }) => {
+        deletecategory: async (_: undefined, { category_id }: { category_id: string }, {token}:{token:string}) => {
             try {
 
                 const check = await CategoryModel.findOne({ where: { category_id } });
 
-                if (!check) return {
-                    msg: "notfound  :(",
-                };
+                if (!check||!token) return new GraphQLError("AUTETIKATE_ERROR");
 
                 const deleted = await CategoryModel.destroy({
                     where: {
@@ -155,7 +165,6 @@ export const resolvers = {
 
 
             } catch (error: any) {
-                console.log(error.message);
                 return new GraphQLError(error.message, {
                     extensions: {
                         code: "INTERNAL_SERVER_ERROR",
@@ -167,8 +176,8 @@ export const resolvers = {
             }
         }
 
+    },
 
 
-
-    }
+    Upload: GraphQLUpload
 }
