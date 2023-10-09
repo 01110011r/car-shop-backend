@@ -121,46 +121,5 @@ export const resolvers = {
         },
 
 
-        // // putadmin
-        // putadmin: async (_: undefined, __: undefined, { token }: { token: string }) => {
-        //     try {
-
-        //         if (!token) new GraphQLError("")
-        //         const myToken: any = token || "";
-
-        //         const { adminname, password }: any = TokenGenerate.verify(myToken);
-
-        //         const check: any = await AdminModel.findOne({ where: { adminname } });
-
-        //         if (!check) return new GraphQLError("notfound  :(");
-
-        //         const equal = await cripto.compare(password, check.password);
-
-        //         if (!equal) return { msg: "wrong password  :(" };
-
-        //         const token = await TokenGenerate.sign({ adminname, password });
-
-        //         return {
-        //             msg: "ok",
-        //             data: token
-        //         };
-
-
-        //     } catch (error: any) {
-        //         return new GraphQLError(error.message, {
-        //             extensions: {
-        //                 code: "INTERNAL_SERVER_ERROR",
-        //                 http: {
-        //                     status: 500
-        //                 }
-        //             }
-        //         });
-        //     }
-        // },
-
-
-
-
-
     }
 }
