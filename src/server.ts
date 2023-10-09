@@ -1,5 +1,5 @@
 import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
+// import { startStandaloneServer } from '@apollo/server/standalone';
 import { newSequelize } from './config';
 import MySchema from "./modules";
 import { expressMiddleware } from "@apollo/server/express4";

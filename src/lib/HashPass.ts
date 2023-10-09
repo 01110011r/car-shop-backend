@@ -2,14 +2,14 @@ import bcrypt from "bcrypt";
 import "dotenv/config";
 
 export default {
-    hash:(pass:string )=>{
+    hash:(pass:any)=>{
 
         const salt : number = Number(process.env.SALT) || 3;
 
-return bcrypt.hash(pass, salt);
+return bcrypt.hash(String(pass), salt);
     },
 
-    compare:(pass:string, hashpass:string)=>{
-        return bcrypt.compare(pass, hashpass);
+    compare:(pass:any, hashpass:any)=>{
+        return bcrypt.compare(String(pass), String(hashpass));
     }
 }

@@ -2,7 +2,6 @@ import { GraphQLError } from "graphql";
 import { AdminModel } from "../../model";
 import TokenGenerate from "../../lib/JwtHelper";
 import cripto from "../../lib/HashPass";
-import { JwtPayload } from "jsonwebtoken";
 
 
 export const resolvers = {
@@ -121,5 +120,15 @@ export const resolvers = {
         },
 
 
+        // putadmin
+        putadmin:async(_:undefined, __:undefined, {token}:{token:string})=>{
+            try {
+
+                
+            } catch (error:any) {
+                console.log(error.message);
+                
+            }
+        }
     }
 }

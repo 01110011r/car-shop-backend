@@ -1,8 +1,10 @@
 import { GraphQLError } from "graphql";
 import { CategoryModel, MarkaModel } from "../../model";
-import { GraphQLUpload, Upload, UploadOptions } from 'graphql-upload-ts';
+import { GraphQLUpload } from 'graphql-upload-ts';
 import { createWriteStream } from "fs";
 import { resolve } from "path";
+import JwtHelper from "../../lib/JwtHelper";
+import { JwtPayload } from "jsonwebtoken";
 
 
 export const resolvers = {
@@ -147,6 +149,8 @@ export const resolvers = {
         // delete
         deletecategory: async (_: undefined, { category_id }: { category_id: string }, {token}:{token:string}) => {
             try {
+
+                // const abc:string | JwtPayload=JwtHelper.verify(token);
 
                 const check = await CategoryModel.findOne({ where: { category_id } });
 
