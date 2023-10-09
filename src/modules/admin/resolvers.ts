@@ -2,6 +2,7 @@ import { GraphQLError } from "graphql";
 import { AdminModel } from "../../model";
 import TokenGenerate from "../../lib/JwtHelper";
 import cripto from "../../lib/HashPass";
+import { JwtPayload } from "jsonwebtoken";
 
 
 export const resolvers = {
@@ -121,13 +122,59 @@ export const resolvers = {
 
 
         // putadmin
-        putadmin:async(_:undefined, __:undefined, {token}:{token:string})=>{
+        putadmin:async(_:undefined, args:{}, {token}:{token:string})=>{
             try {
+             const {adminname, password} : any= await TokenGenerate.verify(token);
 
+             const check = await AdminModel.findOne({where:{adminname, password}});
+
+             let newData;
+             if(check)newData=await AdminModel.update(args,{where:{adminname}});
+
+             return {
+                msg:check ? "ok" : "undefined",
+                data:newData
+             }
                 
             } catch (error:any) {
-                console.log(error.message);
+                return new GraphQLError(error.message, {
+                    extensions: {
+                        code: "INTERNAL_SERVER_ERROR",
+                        http: {
+                            status: 500
+                        }
+                    }
+                });
+            }
+        },
+
+
+
+        // deletadmin
+        deletadmin:async(_:undefined, __:undefined,{token}:{token:string})=>{
+            try {
                 
+                const {admin_id} : any= await TokenGenerate.verify(token);
+
+                const check = await AdminModel.findOne({where:{admin_id}});
+   
+                if(check)await AdminModel.destroy({where:{admin_id}});
+
+                return {
+                    msg: check ? "ok" : "undefined",
+                    data: check
+                }
+
+
+            } catch (error:any) {
+                return new GraphQLError(error.message, {
+                    extensions: {
+                        code: "INTERNAL_SERVER_ERROR",
+                        http: {
+                            status: 500
+                        }
+                    }
+                });
             }
         }
     }

@@ -3,6 +3,7 @@ import { CategoryModel, MarkaModel } from "../../model";
 import { GraphQLUpload } from 'graphql-upload-ts';
 import {createWriteStream} from "fs";
 import {resolve} from "path"; 
+import JwtHelper from "../../lib/JwtHelper";
 
 
 export const resolvers = {
@@ -66,11 +67,13 @@ export const resolvers = {
                         const out = createWriteStream(resolve("uploads", filename));
                         stream.pipe(out);
 
+                        await JwtHelper.verify(token);
+
                         let newData;
 
                         if (marka || narx || category_id) {
 
-                          if(!check&&token) newData = await MarkaModel.create({ marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id, marka_img:filename});
+                          if(!check) newData = await MarkaModel.create({ marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id, marka_img:filename});
                         }
 
 
@@ -107,9 +110,9 @@ export const resolvers = {
                         const out = createWriteStream(resolve("uploads", filename));
                         stream.pipe(out);
 
+                        await JwtHelper.verify(token);
 
-                let PutData;
-               if(check&&token) PutData=await MarkaModel.update({ marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id, marka_img: filename},{
+               if(check) await MarkaModel.update({ marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id, marka_img: filename},{
                     where:{
                         marka_id
                     }
@@ -141,10 +144,12 @@ export const resolvers = {
             try {
                 const check=await MarkaModel.findOne({where:{marka_id}});
 
-                if(!check&&!token)return new GraphQLError("notfound");
+                await JwtHelper.verify(token);
+
+                if(!check)return new GraphQLError("notfound");
 
 
-                const deleted=await MarkaModel.destroy({
+                await MarkaModel.destroy({
                     where:{
                         marka_id
                     }

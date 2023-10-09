@@ -9,7 +9,7 @@ type Mutation{
     signup(adminname:String, password:String):Req
     signin(adminname:String, password:String):Req
     putadmin(admin_id:ID, adminname:String, password:String):Req
-    deletadmin(admin_id:ID):Req
+    deletadmin:Req
 }
 
 

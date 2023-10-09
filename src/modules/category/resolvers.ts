@@ -78,8 +78,10 @@ export const resolvers = {
                 const out = createWriteStream(resolve("uploads", filename));
                 stream.pipe(out);
                
+                await JwtHelper.verify(token);
+
                   let added;
-                if (!check&&token){
+                if (!check){
                      added = await CategoryModel.create({ category, category_img:filename });
                 };
 
@@ -107,7 +109,7 @@ export const resolvers = {
         putcategory: async (_: undefined, { category_id, category, file }: { category_id: string, category: string, file:any }, {token}:{token:string}) => {
             try {
 
-                const check = await CategoryModel.findOne({ where: { category_id } });
+             const check = await CategoryModel.findOne({ where: { category_id } });
 
              let {filename, createReadStream}=await file;
 
@@ -119,8 +121,9 @@ export const resolvers = {
 
              stream.pipe(out);
 
-             let newData;
-                if(check&&token) newData = await CategoryModel.update({ category, category_img:filename }, {
+             await JwtHelper.verify(token);
+
+                if(check) await CategoryModel.update({ category, category_img:filename }, {
                     where: {
                         category_id
                     }
@@ -149,12 +152,11 @@ export const resolvers = {
         // delete
         deletecategory: async (_: undefined, { category_id }: { category_id: string }, {token}:{token:string}) => {
             try {
-
-                // const abc:string | JwtPayload=JwtHelper.verify(token);
+                await JwtHelper.verify(token);
 
                 const check = await CategoryModel.findOne({ where: { category_id } });
 
-                if (!check||!token) return new GraphQLError("AUTETIKATE_ERROR");
+                if (!check) return new GraphQLError("AUTETIKATE_ERROR");
 
                 const deleted = await CategoryModel.destroy({
                     where: {

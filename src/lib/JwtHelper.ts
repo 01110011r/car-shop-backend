@@ -6,10 +6,9 @@ export default {
     sign:(data:{}) =>{
      
             const key : string =process.env.SECRET_KEY || "";
-
+                
             return jwt.sign(data, key);
             
-      
     },
 
     
