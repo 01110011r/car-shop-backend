@@ -4,7 +4,6 @@ import { GraphQLUpload } from 'graphql-upload-ts';
 import { createWriteStream } from "fs";
 import { resolve } from "path";
 import JwtHelper from "../../lib/JwtHelper";
-import { JwtPayload } from "jsonwebtoken";
 
 
 export const resolvers = {
@@ -66,7 +65,6 @@ export const resolvers = {
         // add
         addcategory: async (_: undefined, { category, file }: { category: string, file: any }, {token}:{token:string}) => {
             try {
-
                 const check = await CategoryModel.findOne({ where: { category } });
 
                 let { filename, createReadStream } = await file;

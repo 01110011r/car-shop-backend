@@ -50,7 +50,6 @@ export const resolvers = {
     },
 
 
-
     Mutation: {
 // add
         addmodel: async (root: undefined, { marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id, file }: { marka: string, gearbook: string, tanirovka: boolean, motor: number, year: number, color: string, distance: string, deseription: string, narx: number, category_id:string, file:any }, {token}:{token:string}) => {
@@ -76,8 +75,6 @@ export const resolvers = {
                           if(!check) newData = await MarkaModel.create({ marka, gearbook, tanirovka, motor, year, color, distance, deseription, narx, category_id, marka_img:filename});
                         }
 
-
-                
                 return {
                     msg: !marka || !narx || !category_id ? "insufficient data :(" : check ? "already exists :(" : "ok",
                     data:newData
